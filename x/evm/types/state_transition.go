@@ -114,8 +114,9 @@ func (st StateTransition) newEVM(
 // NOTE: State transition checks are run during AnteHandler execution.
 func (st StateTransition) TransitionDb(ctx sdk.Context, config ChainConfig) (*ExecutionResult, error) {
 	contractCreation := st.Recipient == nil
+	accessList := st.Csdb.accessList
 
-	cost, err := core.IntrinsicGas(st.Payload, contractCreation, true, false)
+	cost, err := core.IntrinsicGas(st.Payload, accessList, contractCreation, true, false)
 	if err != nil {
 		return nil, sdkerrors.Wrap(err, "invalid intrinsic gas for transaction")
 	}

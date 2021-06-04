@@ -1,11 +1,12 @@
+
 package types
 
 import (
 	"github.com/ethereum/go-ethereum/common"
 )
 
-// accessList is copied from go-ethereum
-// https://github.com/ethereum/go-ethereum/blob/cf856ea1ad96ac39ea477087822479b63417036a/core/state/access_list.go#L23
+//accestList is copied from geth:  https://raw.githubusercontent.com/ethereum/go-ethereum/v1.10.3/core/state/access_list.go
+
 type accessList struct {
 	addresses map[common.Address]int
 	slots     []map[common.Hash]struct{}
@@ -29,12 +30,6 @@ func (al *accessList) Contains(address common.Address, slot common.Hash) (addres
 		// address yes, but no slots
 		return true, false
 	}
-
-	if idx >= len(al.slots) {
-		// return in case of out-of-range
-		return true, false
-	}
-
 	_, slotPresent = al.slots[idx][slot]
 	return true, slotPresent
 }
@@ -47,13 +42,13 @@ func newAccessList() *accessList {
 }
 
 // Copy creates an independent copy of an accessList.
-func (al *accessList) Copy() *accessList {
+func (a *accessList) Copy() *accessList {
 	cp := newAccessList()
-	for k, v := range al.addresses {
+	for k, v := range a.addresses {
 		cp.addresses[k] = v
 	}
-	cp.slots = make([]map[common.Hash]struct{}, len(al.slots))
-	for i, slotMap := range al.slots {
+	cp.slots = make([]map[common.Hash]struct{}, len(a.slots))
+	for i, slotMap := range a.slots {
 		newSlotmap := make(map[common.Hash]struct{}, len(slotMap))
 		for k := range slotMap {
 			newSlotmap[k] = struct{}{}
@@ -87,12 +82,6 @@ func (al *accessList) AddSlot(address common.Address, slot common.Hash) (addrCha
 		al.slots = append(al.slots, slotmap)
 		return !addrPresent, true
 	}
-
-	if idx >= len(al.slots) {
-		// return in case of out-of-range
-		return false, false
-	}
-
 	// There is already an (address,slot) mapping
 	slotmap := al.slots[idx]
 	if _, ok := slotmap[slot]; !ok {
