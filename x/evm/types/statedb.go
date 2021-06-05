@@ -953,19 +953,19 @@ func (csdb *CommitStateDB) setStateObject(so *stateObject) {
 // - Add the contents of the optional tx access list (2930)
 //
 // This method should only be called if Berlin/2929+2930 is applicable at the current number.
-func (csdb *CommitStateDB) PrepareAccessList(sender common.Address, dst *common.Address, precompiles []common.Address, list types.AccessList) {
-	s.AddAddressToAccessList(sender)
+func (csdb *CommitStateDB) PrepareAccessList(sender ethcmn.Address, dst *ethcmn.Address, precompiles []ethcmn.Address, list accessList) {
+	csdb.AddAddressToAccessList(sender)
 	if dst != nil {
-		s.AddAddressToAccessList(*dst)
+		csdb.AddAddressToAccessList(*dst)
 		// If it's a create-tx, the destination will be added inside evm.create
 	}
 	for _, addr := range precompiles {
-		s.AddAddressToAccessList(addr)
+		csdb.AddAddressToAccessList(addr)
 	}
 	for _, el := range list {
-		s.AddAddressToAccessList(el.Address)
+		csdb.AddAddressToAccessList(el.Address)
 		for _, key := range el.StorageKeys {
-			s.AddSlotToAccessList(el.Address, key)
+			csdb.AddSlotToAccessList(el.Address, key)
 		}
 	}
 }
