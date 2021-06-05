@@ -1,4 +1,3 @@
-
 package types
 
 import (
@@ -26,7 +25,7 @@ func (al AccessList) StorageKeys() int {
 	}
 	return sum
 }
-i
+
 // AccessListTx is the data of EIP-2930 access list transactions.
 type AccessListTx struct {
 	ChainID    *big.Int        // destination chain ID
